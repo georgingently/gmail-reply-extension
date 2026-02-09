@@ -1,0 +1,34 @@
+{
+  "name": "gmail-reply-extension",
+  "version": "1.0.0",
+  "description": "A Chrome Extension that reads email content, understands context, and uses Groq LLM to generate replies based on user input.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && vite build -c vite.content.config.ts",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgingently/gmail-reply-extension.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/georgingently/gmail-reply-extension/issues"
+  },
+  "homepage": "https://github.com/georgingently/gmail-reply-extension#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.1.36",
+    "@types/node": "^25.2.2",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}
