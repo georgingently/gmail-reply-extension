@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ReplyModal } from './components/ReplyModal';
 import { GmailAdapter } from './gmailAdapter';
+import { Anonymizer } from '../utils/anonymizer';
 
 export const ContentApp: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,15 +18,27 @@ export const ContentApp: React.FC = () => {
         // Collect context
         const threadData = GmailAdapter.extractEmails();
 
+        // Get Privacy Settings
+        const settings = await chrome.storage.local.get(['maskEmails', 'maskNumbers']);
+        const anonymizer = new Anonymizer(!!settings.maskEmails, !!settings.maskNumbers);
+
         // Find the last email in the thread to determine context
         const lastEmail = threadData.emails[threadData.emails.length - 1];
-        const lastSender = lastEmail?.sender || 'Unknown';
-        const myEmail = threadData.myEmail || 'Me';
+        let lastSender = lastEmail?.sender || 'Unknown';
+        let myEmail = threadData.myEmail || 'Me';
 
-        // Filter out empty emails
+        // Anonymize sender/me
+        lastSender = anonymizer.anonymize(lastSender);
+        myEmail = anonymizer.anonymize(myEmail);
+
+        // Filter out empty emails and Anonymize content
         const emailsText = threadData.emails
             .filter(e => e.content.trim().length > 0)
-            .map(e => `[${e.timestamp}] From: ${e.sender}\nBody: ${e.content}\n`)
+            .map(e => {
+                const sender = anonymizer.anonymize(e.sender);
+                const content = anonymizer.anonymize(e.content);
+                return `[${e.timestamp}] From: ${sender}\nBody: ${content}\n`;
+            })
             .join('\n---\n');
 
         let styleInstruction = '';
@@ -69,7 +82,11 @@ Task: Draft a reply to the last email from "${lastSender}".\nRequirements:\n- St
                         reject(response.error);
                     } else {
                         // Ensure reply is a string
-                        const replyText = typeof response.reply === 'string' ? response.reply : JSON.stringify(response.reply || '');
+                        let replyText = typeof response.reply === 'string' ? response.reply : JSON.stringify(response.reply || '');
+
+                        // De-anonymize
+                        replyText = anonymizer.deanonymize(replyText);
+
                         resolve(replyText);
                     }
                 }

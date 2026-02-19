@@ -3,18 +3,26 @@ import ReactDOM from 'react-dom/client';
 
 const Popup = () => {
     const [apiKey, setApiKey] = useState('');
+    const [maskEmails, setMaskEmails] = useState(false);
+    const [maskNumbers, setMaskNumbers] = useState(false);
     const [status, setStatus] = useState('');
 
     useEffect(() => {
-        chrome.storage.local.get(['groqApiKey'], (result) => {
-            if (result && typeof result.groqApiKey === 'string') {
-                setApiKey(result.groqApiKey);
+        chrome.storage.local.get(['groqApiKey', 'maskEmails', 'maskNumbers'], (result) => {
+            if (result) {
+                if (typeof result.groqApiKey === 'string') setApiKey(result.groqApiKey);
+                if (typeof result.maskEmails === 'boolean') setMaskEmails(result.maskEmails);
+                if (typeof result.maskNumbers === 'boolean') setMaskNumbers(result.maskNumbers);
             }
         });
     }, []);
 
     const handleSave = () => {
-        chrome.storage.local.set({ groqApiKey: apiKey }, () => {
+        chrome.storage.local.set({
+            groqApiKey: apiKey,
+            maskEmails,
+            maskNumbers
+        }, () => {
             setStatus('Saved!');
             setTimeout(() => setStatus(''), 2000);
         });
@@ -38,6 +46,28 @@ const Popup = () => {
                 <p style={{ fontSize: '11px', color: '#888', marginTop: '5px', fontStyle: 'italic' }}>
                     Note: Your key is stored locally in your browser (chrome.storage.local) and is never shared with anyone, even if you share the extension code.
                 </p>
+            </div>
+
+            <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f9fafb', borderRadius: '4px' }}>
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>Privacy Settings</h3>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                    <input
+                        type="checkbox"
+                        checked={maskEmails}
+                        onChange={(e) => setMaskEmails(e.target.checked)}
+                        style={{ marginRight: '8px' }}
+                    />
+                    Mask Emails
+                </label>
+                <label style={{ display: 'block', marginBottom: '0', fontSize: '13px', cursor: 'pointer' }}>
+                    <input
+                        type="checkbox"
+                        checked={maskNumbers}
+                        onChange={(e) => setMaskNumbers(e.target.checked)}
+                        style={{ marginRight: '8px' }}
+                    />
+                    Mask Phone Numbers
+                </label>
             </div>
             <button
                 onClick={handleSave}

@@ -1,0 +1,6 @@
+console.log("Gmail Reply Background Script Loaded");chrome.runtime.onMessage.addListener((t,e,r)=>{if(t.action==="generate_reply")return s(t.prompt,r),!0});async function s(t,e){try{const o=(await chrome.storage.local.get(["groqApiKey"])).groqApiKey;if(!o){e({error:"API Key not found. Please set it in the extension settings."});return}const a=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${o}`},body:JSON.stringify({messages:[{role:"system",content:`You are a helpful email assistant. Generate a professional email reply. structure it clearly with:
+1. A polite Salutation (e.g., "Hi [Name],")
+2. The Body of the email with proper paragraph spacing (use two newlines between paragraphs).
+3. A Closing/Signature (e.g., "Best regards, [Name]").
+
+Do NOT include a Subject line. Do NOT include the original email thread. Do NOT include conversational filler involved.`},{role:"user",content:t}],model:"llama-3.3-70b-versatile"})});if(!a.ok){const i=await a.json();e({error:`Groq API Error: ${i.error?.message||a.statusText}`});return}const n=(await a.json()).choices[0]?.message?.content||"";e({reply:n})}catch(r){console.error("Groq fetch error:",r),e({error:r.message})}}
