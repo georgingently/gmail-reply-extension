@@ -18,6 +18,16 @@ A privacy-focused Chrome Extension that helps you draft email replies using the 
 
 ## 🚀 Installation
 
+### Option A: Download ZIP from GitHub (no build required)
+
+1.  Download and extract the repository ZIP from GitHub.
+2.  Open Chrome and navigate to `chrome://extensions/`.
+3.  Enable **Developer mode** (top right toggle).
+4.  Click **Load unpacked**.
+5.  Select the extracted project folder (the folder that contains `manifest.json`).
+
+### Option B: Build from source
+
 1.  **Clone the Repository**:
     ```bash
     git clone https://github.com/georgingently/gmail-reply-extension.git
@@ -33,13 +43,12 @@ A privacy-focused Chrome Extension that helps you draft email replies using the 
     ```bash
     npm run build
     ```
-    This will create a `dist` directory with the compiled extension.
 
 4.  **Load into Chrome**:
     - Open Chrome and navigate to `chrome://extensions/`.
     - Enable **Developer mode** (top right toggle).
     - Click **Load unpacked**.
-    - Select the `dist` directory from the project folder.
+    - Select the project root folder (contains `manifest.json`).
 
 ## ⚙️ Configuration
 
