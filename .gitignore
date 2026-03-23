@@ -2,3 +2,23 @@ node_modules
 .DS_Store
 .env
 *.log
+
+# Codex repo hygiene
+**/.DS_Store
+**/node_modules/
+**/.next/
+**/.turbo/
+**/.vercel/output/
+**/coverage/
+**/.cache/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/__pycache__/
+**/.parcel-cache/
+**/dist/
+**/build/
+**/out/
+**/tmp/
+**/temp/
+*.log
